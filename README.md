@@ -24,5 +24,3 @@
 ### Observer Pattern
 ### Interpreter Pattern
 
-## Wizualizacja Digraph
-http://www.webgraphviz.com/
