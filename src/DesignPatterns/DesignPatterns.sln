@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31729.503
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01_CreationalsPatterns", "01_CreationalsPatterns", "{F2386B77-C42E-43C8-8A89-C1DA19D3DFCA}"
 EndProject
@@ -81,7 +81,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BridgePattern", "BridgePatt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BridgePattern.UnitTests", "BridgePattern.UnitTests\BridgePattern.UnitTests.csproj", "{88E5D701-356C-471F-8A3B-54112C224CE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChainOfResponsibilityPattern.UnitTests.UnitTests", "ChainOfResponsibilityPattern.UnitTests.UnitTests\ChainOfResponsibilityPattern.UnitTests.UnitTests.csproj", "{588DF93F-CCCF-4045-99AA-7E484E98E519}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChainOfResponsibilityPattern.UnitTests.UnitTests", "ChainOfResponsibilityPattern.UnitTests.UnitTests\ChainOfResponsibilityPattern.UnitTests.UnitTests.csproj", "{588DF93F-CCCF-4045-99AA-7E484E98E519}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FactoryPattern.UnitTests", "FactoryPattern.UnitTests\FactoryPattern.UnitTests.csproj", "{11978AE9-EA69-4F96-905B-7221EDBCEC06}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -237,6 +239,10 @@ Global
 		{588DF93F-CCCF-4045-99AA-7E484E98E519}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{588DF93F-CCCF-4045-99AA-7E484E98E519}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{588DF93F-CCCF-4045-99AA-7E484E98E519}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11978AE9-EA69-4F96-905B-7221EDBCEC06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11978AE9-EA69-4F96-905B-7221EDBCEC06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11978AE9-EA69-4F96-905B-7221EDBCEC06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11978AE9-EA69-4F96-905B-7221EDBCEC06}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -279,6 +285,7 @@ Global
 		{C25023DC-E7BA-42F5-A007-87D242B621F6} = {C3AACDBB-31B7-423D-8FA9-C41E6C039CAB}
 		{88E5D701-356C-471F-8A3B-54112C224CE3} = {C3AACDBB-31B7-423D-8FA9-C41E6C039CAB}
 		{588DF93F-CCCF-4045-99AA-7E484E98E519} = {AE8F46A4-887F-4B91-99AD-A883344408B6}
+		{11978AE9-EA69-4F96-905B-7221EDBCEC06} = {F2386B77-C42E-43C8-8A89-C1DA19D3DFCA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AC97C506-DE41-412B-BB0D-1ECD765DD65D}

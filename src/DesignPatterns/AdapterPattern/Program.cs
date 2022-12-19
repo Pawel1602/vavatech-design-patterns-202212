@@ -15,7 +15,7 @@ namespace AdapterPattern
 
             HyteriaRadioTest();
 
-            CrystalReportTest();
+            //CrystalReportTest();
 
         }
 
@@ -66,23 +66,15 @@ namespace AdapterPattern
 
         private static void MotorolaRadioTest()
         {
-            MotorolaRadio radio = new MotorolaRadio();
-            radio.PowerOn("1234");
-            radio.SelectChannel(10);
-            radio.Send("Hello World!");
-            radio.PowerOff();
+            IRadioAdapter radio = new MotorolaRadioAdapter("1234");
+            radio.Send("Hello World!", 10);
         }
 
         private static void HyteriaRadioTest()
         {
-            HyteraRadio radio = new HyteraRadio();
-            radio.Init();
-            radio.SendMessage(10, "Hello World!");
-            radio.Release();
+            IRadioAdapter radio = new HyteraRadioAdapter();            
+            radio.Send("Hello World!", 10);
+            
         }
     }
-
-    
-
-
 }

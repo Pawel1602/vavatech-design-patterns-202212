@@ -23,6 +23,10 @@ namespace PrototypePattern.UnitTests
             // Assert
             copyInvoice.Should().NotBeSameAs(invoice);
 
+            copyInvoice.Number.Should().NotBe(invoice.Number);
+            copyInvoice.CreateDate.Should().NotBe(invoice.CreateDate);
+
+
             copyInvoice.Should().BeEquivalentTo(invoice,
                 options => options
                 .Excluding(i=>i.CreateDate)
@@ -48,6 +52,8 @@ namespace PrototypePattern.UnitTests
             Invoice invoice = new Invoice("FA 1", DateTime.Parse("2022-03-01"), PaymentType.Transfer, customer);
             invoice.Details.Add(new InvoiceDetail(product1));
             invoice.Details.Add(new InvoiceDetail(product2, 3));
+
+            invoice.DueDate = invoice.CreateDate.AddDays(14);
 
             return invoice;
         }
