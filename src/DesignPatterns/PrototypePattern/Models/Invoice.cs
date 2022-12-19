@@ -37,7 +37,8 @@ namespace PrototypePattern
             };
 
 
-            // deep clone
+            // deep clone 
+            // polecam: https://github.com/AlenToma/FastDeepCloner
             foreach (InvoiceDetail detail  in this.Details)
             {
                 var detailCopy = (InvoiceDetail) detail.Clone();
