@@ -16,15 +16,17 @@ namespace BuilderPattern
 
             //PhoneTest();
 
-            //SalesReportTest();
+            // SalesReportTest();
 
-            PersonTest();
+            FluentSalesReportTest();
+
+            // PersonTest();
         }
 
         private static void PersonTest()
         {
             var person = new Person();
-             
+
             person.Name = "Marcin";
             person.Position = "developer";
             person.AddSkill("C#");
@@ -34,28 +36,42 @@ namespace BuilderPattern
             Console.WriteLine(person);
         }
 
+        private static void FluentSalesReportTest() 
+        {
+            FakeOrdersService ordersService = new FakeOrdersService();
+            IEnumerable<Order> orders = ordersService.Get();
+
+            SalesReport salesReport = FluentSalesReportBuilder.Create(orders)               
+                .AddHeader("Raport sprzedaży")
+                .AddGenderSection()                
+                .AddProductSection()
+                .AddFooter()
+                .Build();
+
+            Console.WriteLine(salesReport);
+
+        }
+
         private static void SalesReportTest()
         {
             FakeOrdersService ordersService = new FakeOrdersService();
             IEnumerable<Order> orders = ordersService.Get();
 
-            SalesReport salesReport = new SalesReport();
+            ISalesReportBuilder salesReportBuilder = new SalesReportBuilder(orders);
 
-            salesReport.Title = "Raport sprzedaży";
-            salesReport.CreateDate = DateTime.Now;
-            salesReport.TotalSalesAmount = orders.Sum(s => s.Amount);
+            salesReportBuilder.AddHeader("Raport sprzedaży");
+            salesReportBuilder.AddGenderSection();
+            salesReportBuilder.AddProductSection();
+            salesReportBuilder.AddFooter();
 
-            salesReport.GenderDetails = orders
-                .GroupBy(o => o.Customer.Gender)
-                .Select(g => new GenderReportDetail(
-                            g.Key,
-                            g.Sum(x => x.Details.Sum(d => d.Quantity)),
-                            g.Sum(x => x.Details.Sum(d => d.LineTotal))));
+            //salesReportBuilder
+            //    .AddHeader("Raport sprzedaży")
+            //    .AddGenderSection()
+            //    .AddProductSection()
+            //    .AddFooter();
 
-            salesReport.ProductDetails = orders
-                .SelectMany(o => o.Details)
-                .GroupBy(o => o.Product)
-                .Select(g => new ProductReportDetail(g.Key, g.Sum(p => p.Quantity), g.Sum(p => p.LineTotal)));
+            SalesReport salesReport = salesReportBuilder.Build();
+
 
             Console.WriteLine(salesReport);
 
@@ -67,7 +83,7 @@ namespace BuilderPattern
             phone.Call("555999123", "555000321", ".NET Design Patterns");
         }
 
-       
+
     }
 
     public class FakeOrdersService
