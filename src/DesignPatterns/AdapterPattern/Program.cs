@@ -72,7 +72,7 @@ namespace AdapterPattern
 
         private static void HyteriaRadioTest()
         {
-            IRadioAdapter radio = new HyteraRadioAdapter();            
+            IRadioAdapter radio = new HyteraRadioObjectAdapter();            
             radio.Send("Hello World!", 10);
             
         }
