@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SingletonPattern
 {
-    public class LoadBalancer
+    public class LoadBalancer 
     {
         private readonly List<Server> servers;
 
@@ -26,6 +26,8 @@ namespace SingletonPattern
 
         // Simple Load Balancer
         public Server NextServer => servers[random.Next(servers.Count)];
+
+       
     }
 
     public class Server

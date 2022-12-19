@@ -2,11 +2,11 @@
 {
     public class PrintService
     {
-        public Logger logger { get; set; }
+        public Logger logger { get; private set; }
 
-        public PrintService()
+        public PrintService(Logger logger)
         {
-            logger = new Logger();
+            this.logger = logger;
         }
 
         public void Print(string content, int copies)

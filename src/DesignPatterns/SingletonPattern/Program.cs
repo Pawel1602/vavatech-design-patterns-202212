@@ -11,15 +11,15 @@ namespace SingletonPattern
 
             LoggerTest();
 
-            // LoadBalancerTest();
+            LoadBalancerTest();
 
             Console.ReadKey();
         }
 
         private static void LoggerTest()
         {
-            MessageService messageService = new MessageService();
-            PrintService printService = new PrintService();
+            MessageService messageService = new MessageService(Logger.Instance);
+            PrintService printService = new PrintService(Logger.Instance);
             messageService.Send("Hello World!");
             printService.Print("Hello World!", 3);
 
@@ -37,11 +37,12 @@ namespace SingletonPattern
         {
             Task.Run(() => LoadBalanceRequestTest(15));
             Task.Run(() => LoadBalanceRequestTest(15));
+            Task.Run(() => LoadBalanceRequestTest(15));
         }
 
         private static void LoadBalanceRequestTest(int numberOfRequests)
         {
-            LoadBalancer loadBalancer = new LoadBalancer();
+            LoadBalancer loadBalancer = LazySingleton<LoadBalancer>.Instance;
 
             for (int i = 0; i < numberOfRequests; i++)
             {
