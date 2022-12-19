@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Xml;
 
 namespace BuilderPattern
@@ -18,9 +19,15 @@ namespace BuilderPattern
 
             // SalesReportTest();
 
-            FluentSalesReportTest();
+            // FluentSalesReportTest();
+
+            LazyFluentSalesReportTest();
 
             // PersonTest();
+
+            StringBuilder stringBuilder = new StringBuilder();
+
+            var product = stringBuilder.ToString();
         }
 
         private static void PersonTest()
@@ -41,9 +48,25 @@ namespace BuilderPattern
             FakeOrdersService ordersService = new FakeOrdersService();
             IEnumerable<Order> orders = ordersService.Get();
 
-            SalesReport salesReport = FluentSalesReportBuilder.Create(orders)               
+            SalesReport salesReport = EagerFluentSalesReportBuilder.Create(orders)               
                 .AddHeader("Raport sprzedaży")
                 .AddGenderSection()                
+                .AddProductSection()
+                .AddFooter()
+                .Build();
+
+            Console.WriteLine(salesReport);
+
+        }
+
+        private static void LazyFluentSalesReportTest()
+        {
+            FakeOrdersService ordersService = new FakeOrdersService();
+            IEnumerable<Order> orders = ordersService.Get();
+
+            SalesReport salesReport = new LazyFluentSalesReportBuilder(orders)              
+                .AddHeader("Raport sprzedaży")
+                .AddGenderSection()
                 .AddProductSection()
                 .AddFooter()
                 .Build();
@@ -57,7 +80,7 @@ namespace BuilderPattern
             FakeOrdersService ordersService = new FakeOrdersService();
             IEnumerable<Order> orders = ordersService.Get();
 
-            ISalesReportBuilder salesReportBuilder = new SalesReportBuilder(orders);
+            ISalesReportBuilder salesReportBuilder = new EagerSalesReportBuilder(orders);
 
             salesReportBuilder.AddHeader("Raport sprzedaży");
             salesReportBuilder.AddGenderSection();
