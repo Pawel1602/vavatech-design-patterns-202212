@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace FactoryPattern.UnitTests
 {
     [TestClass]
-    public class CoordinateTests
+    public class CoordinateFactoryTests
     {
         [TestMethod]
         public void Create_FromWkt_ShouldReturnsCoordinate()
@@ -13,7 +13,7 @@ namespace FactoryPattern.UnitTests
             string wkt = "POINT (52 28)";
 
             // Act
-            Coordinate result = CoordinateFactory.NewFromWkt(wkt);
+            Coordinate result = Coordinate.Factory.NewFromWkt(wkt);
 
             // Assert
             Assert.AreEqual(52, result.Longitude);
@@ -33,7 +33,7 @@ namespace FactoryPattern.UnitTests
   	            }";
 
             // Act
-            Coordinate result = CoordinateFactory.NewFromGeoJson(geojson);
+            Coordinate result = Coordinate.Factory.NewFromGeoJson(geojson);
 
             // Assert
             Assert.AreEqual(52, result.Longitude);

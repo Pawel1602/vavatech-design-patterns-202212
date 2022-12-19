@@ -32,7 +32,8 @@ namespace FactoryPattern
             }
         }
 
-        public static Coordinate NewFromGeoJson(string geojson) {
+        public static Coordinate NewFromGeoJson(string geojson)
+        {
             const string pattern = @"\[(\d*), (\d*)\]";
 
             Regex regex = new Regex(pattern);
@@ -54,4 +55,6 @@ namespace FactoryPattern
             }
         }
     }
+
+   
 }
