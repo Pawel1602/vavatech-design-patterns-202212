@@ -2,7 +2,7 @@
 {
     // Concrete adapter
     // Wariant obiektowy
-    // klasa adaptera implementuje interfejs, który zawiera w sobie klasę adaptowaną (Adaptee).
+    // Klasa adaptera implementuje interfejs, który zawiera w sobie klasę adaptowaną (Adaptee)
     class MotorolaRadioAdapter : IRadioAdapter
     {
         // Adaptee
