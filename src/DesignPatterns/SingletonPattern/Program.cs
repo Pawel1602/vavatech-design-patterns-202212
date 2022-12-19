@@ -3,6 +3,9 @@ using System.Threading.Tasks;
 
 namespace SingletonPattern
 {
+    // Przykłady:
+    // HttpContext w aplikacjach webowych (MinimalApi, MVC)
+
     class Program
     {
         static void Main(string[] args)
