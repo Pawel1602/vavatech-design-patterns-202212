@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CommandPattern
 {
@@ -10,15 +11,25 @@ namespace CommandPattern
 
             Message message = new Message("555000123", "555888000", "Hello World!");
 
-            if (message.CanPrint())
+            Queue<ICommand> commands = new Queue<ICommand>();
+            commands.Enqueue(new PrintCommand(message, 3, 10));
+            commands.Enqueue(new SendCommand(message));
+            commands.Enqueue(new SendCommand(message));
+            commands.Enqueue(new SendCommand(message));
+            
+            while (commands.Count > 0)
             {
-                message.Print();
+                ICommand command = commands.Dequeue();
+
+                if (command.CanExecute())
+                {
+                    command.Execute();
+                }
             }
 
-            if (message.CanSend())
-            {
-                message.Send();
-            }    
+            
+
+
         }
     }
 
