@@ -10,18 +10,27 @@ namespace StrategyPattern.UnitTests
     [TestClass]
     public class HappyHoursPercentageOrderCalculatorTests
     {
-        private HappyHoursPercentageOrderCalculator calculator;
+        private OrderCalculator calculator;
 
         [TestInitialize]
         public void Init()
         {
-            calculator = new HappyHoursPercentageOrderCalculator(TimeSpan.Parse("09:00"), TimeSpan.Parse("15:00"), 0.1m);
+            
         }
 
         [TestMethod]
         public void CalculateDiscount_DuringHappyHours_ShouldDiscount()
         {
             // Arrange
+            var from = TimeSpan.Parse("09:00");
+            var to = TimeSpan.Parse("15:00");
+            var percentage = 0.1m;
+
+            ICanDiscountStrategy canDiscountStrategy = new HappyHoursCanDiscountStrategy(from, to);
+            IDiscountStrategy discountStrategy = new PercentageDiscountStrategy(percentage);
+
+            calculator = new OrderCalculator(canDiscountStrategy, discountStrategy);
+
             Order order = new Order(DateTime.Parse("2020-06-12 14:59"), new Customer(), 100);
 
             // Act
