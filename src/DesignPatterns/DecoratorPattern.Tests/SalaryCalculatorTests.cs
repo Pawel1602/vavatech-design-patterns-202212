@@ -3,6 +3,7 @@ using System;
 
 namespace DecoratorPattern.UnitTests
 {
+
     [TestClass]
     public class SalaryCalculatorTests
     { 
