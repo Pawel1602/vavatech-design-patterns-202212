@@ -3,6 +3,31 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace ProxyPattern.UnitTests
 {
     [TestClass]
+    public class InvoiceTests
+    {
+
+        [TestMethod]
+        public void Get_Customer_ShouldReturnsCustomer()
+        {
+            // Arrange
+            Customer customer = new Customer { Id = 1 };
+            Invoice invoice = new InvoiceProxy { CustomerId = customer.Id, Customer = customer };
+
+
+            // Act
+            var result1 = invoice.Customer;
+            var result2 = invoice.Customer;
+            var result3 = invoice.Customer;
+
+            // Assert
+            Assert.IsNotNull(result1);
+            Assert.AreEqual(1, result1.Id);
+
+        }
+    }
+
+
+    [TestClass]
     public class ProductsControllerTests
     {
         private ProductsController productsController;
@@ -11,8 +36,8 @@ namespace ProxyPattern.UnitTests
         public void Init()
         {
             productsController = new ProductsController(
-                   new DbProductRepository(),
-               new CacheProductRepository());
+                                    new CacheProductRepository(
+                                        new DbProductRepository()));
         }
 
         [TestMethod]
