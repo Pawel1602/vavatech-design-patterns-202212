@@ -1,73 +1,77 @@
-﻿using System;
+﻿using Stateless;
+using System;
 using System.Diagnostics.Tracing;
-
+using System.Net.Http.Headers;
 
 namespace StateMachinePattern
 {
+    // dotnet add package Stateless
+
+    // Context
     public class Order
     {
+        private StateMachine<OrderStatus, OrderTrigger> machine = new StateMachine<OrderStatus, OrderTrigger>(OrderStatus.Pending);
+
         public Order(OrderStatus initialState = OrderStatus.Pending)
         {
             Id = Guid.NewGuid();
             OrderDate = DateTime.Now;
-            Status = initialState;
+
+            machine.Configure(OrderStatus.Pending)
+                .PermitIf(OrderTrigger.Confirm, OrderStatus.Completion, ()=>IsPaid, "Is Paid")
+                .Permit(OrderTrigger.Cancel, OrderStatus.Cancelled);
+
+            machine.Configure(OrderStatus.Completion)
+                .Permit(OrderTrigger.Confirm, OrderStatus.Sent)
+                .Permit(OrderTrigger.Cancel, OrderStatus.Cancelled);
+
+            machine.Configure(OrderStatus.Sent)
+                .OnEntry(() => Console.WriteLine($"Your order {Id} was sent."), "Send message")
+                .Permit(OrderTrigger.Confirm, OrderStatus.Delivered)     
+                .Ignore(OrderTrigger.Cancel);
+
+            machine.Configure(OrderStatus.Delivered)
+                .OnEntry(() => Console.WriteLine($"Your order {Id} was delivered."), "Send message")
+                .Permit(OrderTrigger.Confirm, OrderStatus.Completed)
+                .Permit(OrderTrigger.Cancel, OrderStatus.Cancelled);
+
         }
+
+        public string Graph => Stateless.Graph.UmlDotGraph.Format(machine.GetInfo());
 
         public Guid Id { get; set; }
         public DateTime OrderDate { get; set; }
-        public OrderStatus Status { get; private set; }
+        // public OrderStatus Status { get; private set; }
 
-        public void Confirm()
-        {
-            if (Status == OrderStatus.Pending)
-            {
-                Status = OrderStatus.Sent;
-            }
-            else if (Status == OrderStatus.Sent)
-            {
-                Status = OrderStatus.Delivered;
-            }
-            else if (Status == OrderStatus.Delivered)
-            {
-                Status = OrderStatus.Completed;
-            }
-            else
-            {
-                throw new InvalidOperationException();
-            }
+        public OrderStatus Status => machine.State;
 
-        }
+        public bool IsPaid { get; set; }
 
-        public void Cancel()
-        {
-            if (Status == OrderStatus.Pending)
-            {
-                Status = OrderStatus.Cancelled;
-            }
-            else if (Status == OrderStatus.Delivered)
-            {
-                Status = OrderStatus.Cancelled;
-            }
-            else
-            {
-                throw new InvalidOperationException();
-            }
-        }
+        public void Confirm() => machine.Fire(OrderTrigger.Confirm);
 
+        public void Cancel() => machine.Fire(OrderTrigger.Cancel);
+       
         public override string ToString() => $"Order {Id} created on {OrderDate}{Environment.NewLine}";
 
-        public virtual bool CanConfirm => Status == OrderStatus.Pending || Status == OrderStatus.Sent || Status == OrderStatus.Delivered;
-        public virtual bool CanCancel => Status == OrderStatus.Pending || Status == OrderStatus.Delivered;
+        public virtual bool CanConfirm => machine.CanFire(OrderTrigger.Confirm);
+        public virtual bool CanCancel => machine.CanFire(OrderTrigger.Cancel);
     }
 
     public enum OrderStatus
     {
         Pending,
+        Completion,
         Sent,
         Delivered,
         Completed,
         Cancelled
 
+    }
+
+    public enum OrderTrigger
+    {
+        Confirm,
+        Cancel,
     }
 }
 
