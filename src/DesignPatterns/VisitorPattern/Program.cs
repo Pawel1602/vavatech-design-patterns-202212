@@ -11,7 +11,11 @@ namespace VisitorPattern
 
             Form form = Get();
 
-            string html = form.GetHtml();
+            IVisitor visitor = new MarkdownVisitor();
+            
+            form.Accept(visitor);
+
+            string html = visitor.Output;
 
             System.IO.File.WriteAllText("index.html", html);
         }
@@ -25,13 +29,11 @@ namespace VisitorPattern
 
                 Body = new Collection<Control>
                 {
-
-                    new Control { Type = ControlType.Label, Caption = "Person", Name = "lblName" },
-                    new Control { Type = ControlType.TextBox, Caption = "FirstName", Name = "txtFirstName", Value = "John"},
-                    new Control { Type = ControlType.Checkbox, Caption = "IsAdult", Name = "chkIsAdult", Value = "true" },
-                    new Control {  Type = ControlType.Button, Caption = "Submit", Name = "btnSubmit", ImageSource = "save.png" },
+                    new Label { Caption = "Person", Name = "lblName" },
+                    new TextBox { Caption = "FirstName", Name = "txtFirstName", Value = "John"},
+                    new CheckBox { Caption = "IsAdult", Name = "chkIsAdult", Value = true },
+                    new Button {  Caption = "Submit", Name = "btnSubmit", ImageSource = "save.png" },
                 }
-
             };
 
             return form;
