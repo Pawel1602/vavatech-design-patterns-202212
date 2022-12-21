@@ -26,29 +26,71 @@ namespace ChainOfResponsibilityPattern.UnitTests.UnitTests
             // Arrange
             Purchase purchase = new Purchase(999, "Book Design Pattern in C#");
 
+            Executive executive = new Executive();
+
+            CEO ceo = new CEO();
+            ceo.Successor = executive;
+
+            Director director = new Director();
+            director.Successor = ceo; 
+
+            ProductManager manager = new ProductManager();
+            manager.Successor = director;
+
             // Act
-            if (purchase.Amount < 1000)
-            {
-                Trace.WriteLine("ProductManager approved request");
-                purchase.ApprovedBy = manager;
-            }
-            else if (purchase.Amount < 5000)
-            {
-                Trace.WriteLine("Director approved request");
-                purchase.ApprovedBy = director;
-            }
-            else if (purchase.Amount < 10_000)
-            {
-                Trace.WriteLine("CEO approved request");
-                purchase.ApprovedBy = ceo;
-            }
-            else
-            {
-                Trace.WriteLine("Request requires an executive meeting!");
-            }
+            manager.ProcessRequest(purchase);            
 
             // Assert
             Assert.AreSame(manager, purchase.ApprovedBy);
         }
+
+        [TestMethod]
+        public void ProcessRequest_Amount8000_ShouldApprovedByCEO()
+        {
+            // Arrange
+            Purchase purchase = new Purchase(8_000, "Book Design Pattern in C#");
+
+            Executive executive = new Executive();
+
+            CEO ceo = new CEO();
+            ceo.Successor = executive;
+
+            Director director = new Director();
+            director.Successor = ceo;
+
+            ProductManager manager = new ProductManager();
+            manager.Successor = director;
+
+            // Act
+            manager.ProcessRequest(purchase);
+
+            // Assert
+            Assert.AreSame(ceo, purchase.ApprovedBy);
+        }
+
+        [TestMethod]
+        public void ProcessRequest_Amount100_000_ShouldApprovedByExecutive()
+        {
+            // Arrange
+            Purchase purchase = new Purchase(100_000, "Car");
+
+            Executive executive = new Executive();
+
+            CEO ceo = new CEO();
+            ceo.Successor = executive;
+
+            Director director = new Director();
+            director.Successor = ceo;
+
+            ProductManager manager = new ProductManager();
+            manager.Successor = director;
+
+            // Act
+            manager.ProcessRequest(purchase);
+
+            // Assert
+            Assert.AreSame(executive, purchase.ApprovedBy);
+        }
+
     }
 }
