@@ -8,7 +8,7 @@ namespace StatePattern
 {
     internal static class OrderStatusExtensions
     {
-        public static void Dump(this OrderStatus status)
+        public static void Dump(this OrderState status)
         {
             Console.ForegroundColor = Create(status);
             Console.WriteLine(status);
@@ -16,13 +16,13 @@ namespace StatePattern
         }
 
         // Metoda wytwórcza (fabrykująca)
-        private static ConsoleColor Create(OrderStatus orderStatus) => orderStatus switch
+        private static ConsoleColor Create(OrderState orderState) => orderState switch
         {
-            OrderStatus.Pending => ConsoleColor.DarkYellow,
-            OrderStatus.Sent => ConsoleColor.Green,
-            OrderStatus.Delivered => ConsoleColor.Blue,
-            OrderStatus.Completed => ConsoleColor.Black,
-            OrderStatus.Cancelled => ConsoleColor.DarkGray,
+            Pending => ConsoleColor.DarkYellow,
+            Sent => ConsoleColor.Green,
+            Delivered => ConsoleColor.Blue,
+            Completed => ConsoleColor.Black,
+            Cancelled => ConsoleColor.DarkGray,
             _ => Console.ForegroundColor,
         };
     }

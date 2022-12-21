@@ -12,15 +12,17 @@ namespace StatePattern
         {
             while (true)
             {
-                var order = new Order();
+                var order = new OrderProxy();
 
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
                 Console.WriteLine(order);
                 Console.ResetColor();
 
-                order.Status.Dump();
+                order.State.Dump();
 
-                while (!(order.Status == OrderStatus.Cancelled || order.Status == OrderStatus.Completed))
+                order.IsPaid = true;
+
+                while (!(order.State is Cancelled || order.State is Completed))
                 {
                     if (order.CanConfirm)
                         Console.Write("Confirm (Enter) ");
@@ -38,7 +40,7 @@ namespace StatePattern
                     if (key == ConsoleKey.C)
                         order.Cancel();
 
-                    order.Status.Dump();
+                    order.State.Dump();
 
                 }
 
