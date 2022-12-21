@@ -1,24 +1,52 @@
-﻿using Stateless;
+﻿using MediatR;
+using Stateless;
 using System;
 using System.Diagnostics.Tracing;
 using System.Net.Http.Headers;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace StateMachinePattern
 {
+
+    public class SendMessage : INotification
+    {
+        public Guid Id { get; set; }
+    }
+
+    public class EmailSendMessageHandler : INotificationHandler<SendMessage>
+    {        
+        public Task Handle(SendMessage notification, CancellationToken cancellationToken)
+        {
+            Console.WriteLine($"Your order {notification.Id} was sent.");
+
+            return Task.CompletedTask;
+        }
+    }
+
     // dotnet add package Stateless
 
-    // Context
-    public class Order
+    public class OrderProxy : Order
     {
-        private StateMachine<OrderStatus, OrderTrigger> machine = new StateMachine<OrderStatus, OrderTrigger>(OrderStatus.Pending);
+        
 
-        public Order(OrderStatus initialState = OrderStatus.Pending)
+        private StateMachine<OrderStatus, OrderTrigger> machine;
+
+        public string Graph => Stateless.Graph.UmlDotGraph.Format(machine.GetInfo());
+
+        public OrderProxy(IMediator mediator, OrderStatus orderStatus = OrderStatus.Pending) : base(orderStatus)
         {
-            Id = Guid.NewGuid();
-            OrderDate = DateTime.Now;
+            // Initial State
+            // machine = new StateMachine<OrderStatus, OrderTrigger>(OrderStatus.Pending);
+
+            
+            // External State Storage
+            machine = new StateMachine<OrderStatus, OrderTrigger>(
+                () => orderStatus,
+                s => orderStatus = s);
 
             machine.Configure(OrderStatus.Pending)
-                .PermitIf(OrderTrigger.Confirm, OrderStatus.Completion, ()=>IsPaid, "Is Paid")
+                .PermitIf(OrderTrigger.Confirm, OrderStatus.Completion, () => IsPaid, "Is Paid")
                 .Permit(OrderTrigger.Cancel, OrderStatus.Cancelled);
 
             machine.Configure(OrderStatus.Completion)
@@ -26,8 +54,8 @@ namespace StateMachinePattern
                 .Permit(OrderTrigger.Cancel, OrderStatus.Cancelled);
 
             machine.Configure(OrderStatus.Sent)
-                .OnEntry(() => Console.WriteLine($"Your order {Id} was sent."), "Send message")
-                .Permit(OrderTrigger.Confirm, OrderStatus.Delivered)     
+                .OnEntry(() => mediator.Publish(new SendMessage { Id = Id }))
+                .Permit(OrderTrigger.Confirm, OrderStatus.Delivered)
                 .Ignore(OrderTrigger.Cancel);
 
             machine.Configure(OrderStatus.Delivered)
@@ -35,26 +63,49 @@ namespace StateMachinePattern
                 .Permit(OrderTrigger.Confirm, OrderStatus.Completed)
                 .Permit(OrderTrigger.Cancel, OrderStatus.Cancelled);
 
+            machine.OnTransitioned(transition =>
+            {
+                System.Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"{transition.Trigger} : {transition.Source} -> {transition.Destination}");
+                Console.ResetColor();
+            });
         }
 
-        public string Graph => Stateless.Graph.UmlDotGraph.Format(machine.GetInfo());
+        public override OrderStatus Status => machine.State;
+
+        public override void Confirm() => machine.Fire(OrderTrigger.Confirm);
+        public override void Cancel() => machine.Fire(OrderTrigger.Cancel);
+
+        public override bool CanConfirm => machine.CanFire(OrderTrigger.Confirm);
+        public override bool CanCancel => machine.CanFire(OrderTrigger.Cancel);
+
+    }
+
+    // Context
+    public class Order
+    {       
+        public Order(OrderStatus initialState = OrderStatus.Pending)
+        {
+            Id = Guid.NewGuid();
+            OrderDate = DateTime.Now;
+        }
 
         public Guid Id { get; set; }
         public DateTime OrderDate { get; set; }
-        // public OrderStatus Status { get; private set; }
 
-        public OrderStatus Status => machine.State;
+        public virtual OrderStatus Status { get; private set; }
+
 
         public bool IsPaid { get; set; }
 
-        public void Confirm() => machine.Fire(OrderTrigger.Confirm);
+        public virtual void Confirm() { }
 
-        public void Cancel() => machine.Fire(OrderTrigger.Cancel);
+        public virtual void Cancel() { }
        
         public override string ToString() => $"Order {Id} created on {OrderDate}{Environment.NewLine}";
 
-        public virtual bool CanConfirm => machine.CanFire(OrderTrigger.Confirm);
-        public virtual bool CanCancel => machine.CanFire(OrderTrigger.Cancel);
+        public virtual bool CanConfirm { get; set; }
+        public virtual bool CanCancel { get; set; }
     }
 
     public enum OrderStatus

@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace StatePattern
 {
@@ -18,9 +21,15 @@ namespace StatePattern
 
         private static void StateMachineTest()
         {
+            var serviceCollection = new ServiceCollection()
+                    .AddMediatR(Assembly.GetExecutingAssembly())
+                    .BuildServiceProvider();
+
+            var mediator = serviceCollection.GetRequiredService<IMediator>();
+
             while (true)
             {
-                var order = new StateMachinePattern.Order();
+                var order = new StateMachinePattern.OrderProxy(mediator);
 
                 Console.WriteLine(order.Graph);
 
