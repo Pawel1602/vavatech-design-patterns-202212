@@ -12,9 +12,17 @@ namespace FlyweightPattern
         {
             Console.WriteLine("Hello Flyweight Pattern!");
 
-            Game game = new Game(TreeFactory.Create());
+            // Game game = new Game(TreeFactory.Create());
+            //
+            // game.Play();
 
-            game.Play();
+            PointService pointService = new PointService(new PointIconFactory());
+            var points = pointService.Get();
+
+            foreach (var point in points)
+            {
+                point.Draw();
+            }
         }
     }
 
