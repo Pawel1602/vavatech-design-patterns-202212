@@ -1,24 +1,32 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using System.Runtime.InteropServices;
+using FluentAssertions;
+using Xunit;
 
 namespace InterpreterPattern.UnitTests
 {
-    [TestClass]
     public class ParserTests
     {
-        [TestMethod]
-        public void Evaluate_ValidExpression_ShouldReturnResult()
+        private readonly Parser parser;
+        
+        public ParserTests()
         {
-            // Arrange
-            string expression = "2 3 + 1 - 2 *"; // (2 + 3) * (1 - 2) = -5
-
-            var parser = new Parser();
-
+            parser = new Parser(new ExpressionFactory());
+        }
+        
+        [Theory]
+        [InlineData("2 2 +", 4)]
+        [InlineData("4 2 -", 2)]
+        [InlineData("2 2 *", 4)]
+        [InlineData("2 3 + 1 2 - *", -5)] // (2 + 3) * (1 - 2)
+        [InlineData("5 1 2 + 4 * + 3 -", 14)] // 5 + (1+2) × 4 − 3
+        public void Evaluate_ValidExpression_ShouldReturnResult(string expression, int expected)
+        {
             // Act
             int result = parser.Evaluate(expression);
 
             // Assert
-            Assert.AreEqual(-5, result);
-
+            result.Should().Be(expected);
         }
     }
 }
