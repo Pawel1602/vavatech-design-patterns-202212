@@ -43,14 +43,15 @@ namespace BuilderPattern
             Console.WriteLine(person);
         }
 
-        private static void FluentSalesReportTest() 
+        private static void FluentSalesReportTest()
         {
             FakeOrdersService ordersService = new FakeOrdersService();
             IEnumerable<Order> orders = ordersService.Get();
 
-            SalesReport salesReport = EagerFluentSalesReportBuilder.Create(orders)               
+            SalesReport salesReport = EagerFluentSalesReportBuilder.Create(orders)
                 .AddHeader("Raport sprzedaży")
-                .AddGenderSection()                
+                .AddProductSection()
+                .AddGenderSection()
                 .AddProductSection()
                 .AddFooter()
                 .Build();
@@ -64,7 +65,7 @@ namespace BuilderPattern
             FakeOrdersService ordersService = new FakeOrdersService();
             IEnumerable<Order> orders = ordersService.Get();
 
-            SalesReport salesReport = new LazyFluentSalesReportBuilder(orders)              
+            SalesReport salesReport = new LazyFluentSalesReportBuilder(orders)
                 .AddHeader("Raport sprzedaży")
                 .AddGenderSection()
                 .AddProductSection()

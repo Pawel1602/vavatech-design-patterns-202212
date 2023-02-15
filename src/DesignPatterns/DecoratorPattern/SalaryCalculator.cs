@@ -14,25 +14,36 @@ namespace DecoratorPattern
     {
         private readonly decimal amountPerHour;
         private readonly decimal bonusPerProject;
+        private readonly decimal benefit;
 
-        public SalaryCalculator(decimal amountPerHour, decimal bonusPerProject)
+        public SalaryCalculator(decimal amountPerHour, decimal bonusPerProject, decimal benefit)
         {
             this.amountPerHour = amountPerHour;
             this.bonusPerProject = bonusPerProject;
+            this.benefit = benefit;
         }
 
         public decimal CalculateSalary(Employee employee)
         {
-            Employee decoratedEmployee = 
-                new ProjectSalaryDecorator(                
+            Employee decoratedEmployee =
+                new ProjectSalaryDecorator(
                     new OvertimeSalaryDecorator(
                         employee, amountPerHour), bonusPerProject);
 
-            decimal salary = decoratedEmployee.GetSalary();
+            Employee decoratedEmployee2 =
+                new OvertimeSalaryDecorator(
+                    new ProjectSalaryDecorator(
+                        new BenefitSalaryDecorator(
+                            employee, benefit),
+                         bonusPerProject),
+                    amountPerHour);
 
-         
-            return salary;           
-           
+            decimal salary = decoratedEmployee.GetSalary();
+            decimal salary2 = decoratedEmployee2.GetSalary();
+
+
+            return salary;
+
         }
     }
 

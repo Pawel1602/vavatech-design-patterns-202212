@@ -56,4 +56,21 @@ namespace DecoratorPattern
             return base.GetSalary() + employee.NumberOfProjects * bonusPerProject;
         }
     }
+
+    //Concrete decorator
+    public class BenefitSalaryDecorator : SalaryDecorator
+    {
+        private readonly decimal benefit;
+
+        public BenefitSalaryDecorator(Employee employee, decimal benefit) : base(employee)
+        {
+            this.benefit = benefit;
+        }
+
+        public override decimal GetSalary()
+        {
+            return base.GetSalary() + benefit;
+        }
+
+    }
 }
